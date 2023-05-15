@@ -56,6 +56,9 @@ function getNotionDBInfo() {
         }
         let db = new Map();
         for (let task of temp) {
+            if (task.properties.Name.title[0] == undefined) {
+                continue;
+            }
             let name = task.properties.Name.title[0].text.content;
             let status = task.properties.Status.select.name;
             let assignees = [];
@@ -105,10 +108,82 @@ function getNotionDBInfo() {
 
 function reportUpdatesToDiscord(updates) {
     for (let update of updates) {
-        console.log(update);
+        var contentBody = "";
+
+        if (update.task.Assignees.length > 0) {
+            for (let assignee of update.task.Assignees) {
+                if (assignee != undefined) {
+                    let pingID = OFFICERS.get(assignee).discord;
+                    contentBody += "<@" + pingID + "> ";
+                }
+            }
+        }
+
+        if (update.update == "status") {
+            let newStatus = update.task.Status.toUpperCase();
+            contentBody += "The status of the following task has changed to **" + newStatus + "**:\n\n";
+            contentBody += "\t**Name**: " + update.task.Name + "\n";
+            if (update.task["Due Date"] != undefined) {
+                contentBody += "\t**Due Date**: " + update.task["Due Date"] + "\n";
+            }
+            if (update.task.Priority != undefined) {
+                contentBody += "\t**Priority**: " + update.task.Priority + "\n";
+            }
+            contentBody += "\n" + update.task.Link;
+        } else if (update.update == "priority") {
+            let newPriority = undefined;
+            if (update.task.Priority == undefined) {
+                newPriority = "The priority of the following task has been removed:\n\n";
+            } else {
+                newPriority = "The status of the following task has been changed to **" + update.task.Priority.toUpperCase() + "**:\n\n";
+            }
+            contentBody += newPriority;
+            contentBody += "\t**Name**: " + update.task.Name + "\n";
+            contentBody += "\t**Status**: " + update.task.Status + "\n";
+            if (update.task["Due Date"] != undefined) {
+                contentBody += "\t**Due Date**: " + update.task["Due Date"] + "\n";
+            }
+            contentBody += "\n" + update.task.Link;
+        } else if (update.update == "due date") {
+            let newDueDate = undefined;
+            if (update.task["Due Date"] == undefined) {
+                newDueDate = "The due date of the following task has been removed:\n\n";
+            } else {
+                newDueDate = "The due date of the following task has been changed to **" + update.task["Due Date"] + "**:\n\n";
+            }
+            contentBody += newDueDate;
+            contentBody += "\t**Name**: " + update.task.Name + "\n";
+            contentBody += "\t**Status**: " + update.task.Status + "\n";
+            if (update.task.Priority != undefined) {
+                contentBody += "\t**Priority**: " + update.task.Priority + "\n";
+            }
+            contentBody += "\n" + update.task.Link;
+        // } else if (update.update == "created") {
+        //     contentBody += "The following task has been **created**:\n\n";
+        //     contentBody += "\t**Name**: " + update.task.Name + "\n";
+        //     contentBody += "\t**Status**: " + update.task.Status + "\n";
+        //     if (update.task["Due Date"] != undefined) {
+        //         contentBody += "\t**Due Date**: " + update.task["Due Date"] + "\n";
+        //     }
+        //     if (update.task.Priority != undefined) {
+        //         contentBody += "\t**Priority**: " + update.task.Priority + "\n";
+        //     }
+        //     contentBody += "\n" + update.task.Link;
+        } else if (update.update == "removed") {
+            contentBody += "The following task has been **removed**:\n\n";
+            contentBody += "\t**Name**: " + update.task.Name + "\n";
+            contentBody += "\t**Status**: " + update.task.Status + "\n";
+            if (update.task["Due Date"] != undefined) {
+                contentBody += "\t**Due Date**: " + update.task["Due Date"] + "\n";
+            }
+            if (update.task.Priority != undefined) {
+                contentBody += "\t**Priority**: " + update.task.Priority + "\n";
+            }
+        }
+
         api.createMessage(CHANNEL_ID, 
             {
-                "content": update.update,
+                "content": contentBody,
                 "tts": false
             }
         );

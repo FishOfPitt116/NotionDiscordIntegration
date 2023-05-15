@@ -28,7 +28,7 @@ export function findUpdates(oldDatabase, newDatabase) {
         if (!newDatabase.has(id)) {
             updates.push(
                 {
-                    "update": "removed task",
+                    "update": "removed",
                     "task": oldTask
                 }
             );
@@ -38,7 +38,23 @@ export function findUpdates(oldDatabase, newDatabase) {
         if (oldTask.Status != newTask.Status) {
             updates.push(
                 {
-                    "update": "task status",
+                    "update": "status",
+                    "task": newTask
+                }
+            )
+        }
+        if (oldTask.Priority != newTask.Priority) {
+            updates.push(
+                {
+                    "update": "priority",
+                    "task": newTask
+                }
+            )
+        }
+        if (oldTask["Due Date"] != newTask["Due Date"]) {
+            updates.push(
+                {
+                    "update": "due date",
                     "task": newTask
                 }
             )
@@ -48,7 +64,7 @@ export function findUpdates(oldDatabase, newDatabase) {
         if (!oldDatabase.has(id)) {
             updates.push(
                 {
-                    "update": "created task",
+                    "update": "created",
                     "task": newTask
                 }
             );
