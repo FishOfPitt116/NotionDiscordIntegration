@@ -1,5 +1,7 @@
 import officers from './static/officers.json' assert { type : 'json' };
 import { config } from 'dotenv';
+import { findUpdates } from './compare.js';
+import { writeDatabase } from './io.js';
 
 config();
 
@@ -13,17 +15,7 @@ var database = undefined;
 setInterval(getUpdatesToDB, 5000);
 
 function getUpdatesToDB() {
-    // var oldDatabase = undefined;
-    // if (database != undefined) {
-    //     oldDatabase = JSON.parse(JSON.stringify(database));
-    // }
     getNotionDBInfo();
-    // console.log(database);
-    // if (oldDatabase == database) { // change way this is checked for, check every attribute in every task
-    //     console.log("no changes");
-    //     return undefined;
-    // }
-    // console.log("changes");
 }
 
 function getNotionDBInfo() {
@@ -42,7 +34,7 @@ function getNotionDBInfo() {
             database = undefined;
             return;
         }
-        database = new Map();
+        let db = new Map();
         for (let task of temp) {
             let name = task.properties.Name.title[0].text.content;
             let status = task.properties.Status.select.name;
@@ -80,12 +72,17 @@ function getNotionDBInfo() {
                 'Notes': notes,
                 'Link': task.url
             }
-            database.set(task.id, value);
+            db.set(task.id, value);
         }
-        console.log(database);
+        let updates = findUpdates(database, db);
+        if (updates.length > 0) {
+            reportUpdatesToDiscord(findUpdates(database, db));
+            database = db;
+            writeDatabase(database);
+        }
     });
 }
 
 function reportUpdatesToDiscord(updates) {
-
+    console.log(updates);
 }
