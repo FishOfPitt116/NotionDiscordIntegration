@@ -1,4 +1,4 @@
-import officers from './officers.json' assert { type : 'json' };
+import officers from './static/officers.json' assert { type : 'json' };
 import { config } from 'dotenv';
 
 config();
@@ -13,20 +13,17 @@ var database = undefined;
 setInterval(getUpdatesToDB, 5000);
 
 function getUpdatesToDB() {
-    var oldDatabase = undefined;
-    if (database != undefined) {
-        oldDatabase = JSON.parse(JSON.stringify(database));
-    }
+    // var oldDatabase = undefined;
+    // if (database != undefined) {
+    //     oldDatabase = JSON.parse(JSON.stringify(database));
+    // }
     getNotionDBInfo();
-    if (oldDatabase == database) { // change way this is checked for, check every attribute in every task
-        console.log("no changes");
-        return undefined;
-    }
-    console.log("changes");
-}
-
-function reportUpdatesToDB(updates) {
-
+    // console.log(database);
+    // if (oldDatabase == database) { // change way this is checked for, check every attribute in every task
+    //     console.log("no changes");
+    //     return undefined;
+    // }
+    // console.log("changes");
 }
 
 function getNotionDBInfo() {
@@ -87,4 +84,8 @@ function getNotionDBInfo() {
         }
         console.log(database);
     });
+}
+
+function reportUpdatesToDiscord(updates) {
+
 }
