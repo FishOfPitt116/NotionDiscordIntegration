@@ -2,15 +2,25 @@ import officers from './static/officers.json' assert { type : 'json' };
 import { config } from 'dotenv';
 import { findUpdates } from './compare.js';
 import { readDatabase, writeDatabase } from './io.js';
+import { ChannelsAPI } from '@discordjs/core'
+import { REST } from '@discordjs/rest'
 
 config();
 
 const DATABASE_ID = process.env.DATABASE_ID;
 const NOTION_KEY = process.env.NOTION_KEY;
 
+const DISCORD_TOKEN = process.env.DISCORD_TOKEN;
+const APP_ID = process.env.APP_ID;
+const PUBLIC_KEY = process.env.PUBLIC_KEY;
+const CHANNEL_ID = process.env.CHANNEL_ID;
+
 const OFFICERS = new Map(officers);
 
 var database = readDatabase();
+
+const rest = new REST({ version : '10'}).setToken(DISCORD_TOKEN);
+const api = new ChannelsAPI(rest);
 
 setInterval(getUpdatesToDB, 5000);
 
@@ -94,5 +104,14 @@ function getNotionDBInfo() {
 }
 
 function reportUpdatesToDiscord(updates) {
-    console.log(updates);
+    for (let update of updates) {
+        console.log(update);
+        api.createMessage(CHANNEL_ID, 
+            {
+                "content": update.update,
+                "tts": false
+            }
+        );
+    }
+
 }
