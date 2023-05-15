@@ -1,7 +1,7 @@
 import officers from './static/officers.json' assert { type : 'json' };
 import { config } from 'dotenv';
 import { findUpdates } from './compare.js';
-import { writeDatabase } from './io.js';
+import { readDatabase, writeDatabase } from './io.js';
 
 config();
 
@@ -10,11 +10,12 @@ const NOTION_KEY = process.env.NOTION_KEY;
 
 const OFFICERS = new Map(officers);
 
-var database = undefined;
+var database = readDatabase();
 
 setInterval(getUpdatesToDB, 5000);
 
 function getUpdatesToDB() {
+    console.log("Checking Notion for updates...");
     getNotionDBInfo();
 }
 
@@ -27,8 +28,17 @@ function getNotionDBInfo() {
             'Content-Type': 'application/json'
         }
     })
-    .then(response => response.json())
     .then(response => {
+        try {
+            return response.json();
+        } catch (SynaxError) {
+            return undefined;
+        }
+    })
+    .then(response => {
+        if (response == undefined) {
+            return;
+        }
         let temp = response.results;
         if (temp == undefined) {
             database = undefined;
