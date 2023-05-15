@@ -1,0 +1,74 @@
+[
+    [
+        "dec857b8-625f-418d-aa18-354f221efc8f", 
+        {
+            "name": "Kathryn Bager",
+            "position": "Communications and Media Manager",
+            "email": "kathrynbager@gmail.com",
+            "discord": null
+        }        
+    ],
+    [
+        "90ef10a9-3bd3-45ec-bc90-d7cb1170a8ca",
+        {
+            "name": "Nij Patel",
+            "position": "Events Coordinator",
+            "email": "nijpatel28@gmail.com",
+            "discord": null
+        }
+    ],
+    [
+        "2aae8144-bd2d-4398-843c-48db47db3a84",
+        {
+            "name": "Robbie Fishel",
+            "position": "President",
+            "email": "robbie.fishel6@gmail.com",
+            "discord": null
+        }
+    ],
+    [
+        "31f12df4-ab87-49df-8713-db3121e53c4a",
+        {
+            "name": "Nathan Barta",
+            "position": "Vice President",
+            "email": "natethancb@gmail.com",
+            "discord": null
+        }
+    ],
+    [
+        "9de4a4ae-c5ce-4702-b29d-2e5ac88d2dea",
+        {
+            "name": "Minakshi Thapa",
+            "position": "Initiative Lead",
+            "email": "tshirsti85@gmail.com",
+            "discord": null
+        }
+    ],
+    [
+        "fba00396-9516-4024-8a02-60afa3c84a00",
+        {
+            "name": "Brayden Nguyen",
+            "position": "Special Events Coordinator",
+            "email": "braybra06@gmail.com",
+            "discord": null
+        }
+    ],
+    [
+        "130652f0-629a-49fa-bc16-158d254e7f03",
+        {
+            "name": "Tianyi Zheng",
+            "position": "Financial Manager",
+            "email": "tianyizheng02@gmail.com",
+            "discord": null
+        }
+    ],
+    [
+        "5c443dcf-0e8c-4719-965f-d23b60a9c687",
+        {
+            "name": "Michael (Justin) Henry",
+            "position": "Initiative Lead",
+            "email": "mlh184@pitt.edu",
+            "discord": null
+        }
+    ]
+]

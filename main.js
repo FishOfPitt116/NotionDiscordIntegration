@@ -1,7 +1,12 @@
-require('dotenv').config();
+import officers from './officers.json' assert { type : 'json' };
+import { config } from 'dotenv';
+
+config();
 
 const DATABASE_ID = process.env.DATABASE_ID;
 const NOTION_KEY = process.env.NOTION_KEY;
+
+const OFFICERS = new Map(officers);
 
 var database = undefined;
 
@@ -41,15 +46,42 @@ function getNotionDBInfo() {
             return;
         }
         database = new Map();
-        for (task of temp) {
-            value = {
-                'Name': task.properties.Name.title[0].text.content,
-                'Status': task.properties.Status.select.name,
-                'Assignees': [/* task.properties.Assignee.people is list to pull from */], // need to find way to iterate through and set all assignees. Also assignee ID to discord ID for ping
-                // 'Due Date': task.properties['Due Date'].date.start, (does not consider case where there is no due date)
-                // 'Priority': task.properties.Priority.select.name, (does not consider case where priority is null)
-                'Tags': [/* task.propertiest.Tags.multi_select is list to pull from */], // need to find a way to iterate through and set all tags.
-                // 'Notes': task.properties.Notes.rich_text[0].plain_text (does notconsider case where there are no notes)
+        for (let task of temp) {
+            let name = task.properties.Name.title[0].text.content;
+            let status = task.properties.Status.select.name;
+            let assignees = [];
+            for (let assignee of task.properties.Assignee.people) {
+                if (!OFFICERS.has(assignee.id)) {
+                    assignees.push(undefined);
+                } else {
+                    assignees.push(assignee.id);
+                }
+            }
+            let dueDate = undefined;
+            if (task.properties['Due Date'].date != null) {
+                dueDate = task.properties['Due Date'].date.start;
+            }
+            let priority = undefined;
+            if (task.properties.Priority.select != null) {
+                priority = task.properties.Priority.select.name;
+            }
+            let tags = [];
+            for (let tag of task.properties.Tags.multi_select) {
+                tags.push(tag.name);
+            }
+            let notes = undefined;
+            if (task.properties.Notes.rich_text.length > 0) {
+                notes = task.properties.Notes.rich_text[0].plain_text;
+            }
+            let value = {
+                'Name': name,
+                'Status': status,
+                'Assignees': assignees, 
+                'Due Date': dueDate,
+                'Priority': priority,
+                'Tags': tags,
+                'Notes': notes,
+                'Link': task.url
             }
             database.set(task.id, value);
         }
