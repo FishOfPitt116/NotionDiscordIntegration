@@ -99,6 +99,7 @@ function getNotionDBInfo() {
         }
         let updates = findUpdates(database, db);
         if (updates.length > 0) {
+            console.log("Updates found!");
             reportUpdatesToDiscord(findUpdates(database, db));
             database = db;
             writeDatabase(database);
@@ -180,6 +181,8 @@ function reportUpdatesToDiscord(updates) {
                 contentBody += "\t**Priority**: " + update.task.Priority + "\n";
             }
         }
+
+        console.log("Sending a discord message with the following content: \n" + contentBody);
 
         api.createMessage(CHANNEL_ID, 
             {
